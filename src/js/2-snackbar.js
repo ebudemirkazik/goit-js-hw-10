@@ -1,27 +1,35 @@
-import iziToast from "izitoast";
-import "izitoast/dist/css/iziToast.min.css";
+import iziToast from 'izitoast';
+import 'izitoast/dist/css/iziToast.min.css';
 
-const form = document.querySelector(".form");
+const form = document.querySelector('.form');
 
-form.addEventListener("submit", (event) => {
+form.addEventListener('submit', event => {
   event.preventDefault();
 
   const delay = Number(form.elements.delay.value);
   const state = form.elements.state.value;
 
+  if (delay <= 0) {
+    iziToast.warning({
+      title: 'Warning',
+      message: 'Please enter a positive delay value',
+      position: 'topRight',
+    });
+    return;
+  }
   createPromise(delay, state)
-    .then((delay) => {
+    .then(delay => {
       iziToast.success({
-        title: "✅ Success",
+        title: '✅ Success',
         message: `Fulfilled promise in ${delay}ms`,
-        position: "topRight",
+        position: 'topRight',
       });
     })
-    .catch((delay) => {
+    .catch(delay => {
       iziToast.error({
-        title: "Error",
+        title: '❌ Error',
         message: `Rejected promise in ${delay}ms`,
-        position: "topRight",
+        position: 'topRight',
       });
     });
 
@@ -31,7 +39,7 @@ form.addEventListener("submit", (event) => {
 function createPromise(delay, state) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      if (state === "fulfilled") {
+      if (state === 'fulfilled') {
         resolve(delay);
       } else {
         reject(delay);
