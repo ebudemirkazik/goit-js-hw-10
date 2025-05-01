@@ -1,62 +1,67 @@
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
+import iziToast from "izitoast";
+import "izitoast/dist/css/iziToast.min.css";
 
-const datetimePicker = document.getElementById("datetime-picker");
-const startButton = document.querySelector("[data-start]");
-
+const startBtn = document.querySelector("[data-start]");
+const dateTimePicker = document.querySelector("#datetime-picker");
 const daysSpan = document.querySelector("[data-days]");
 const hoursSpan = document.querySelector("[data-hours]");
 const minutesSpan = document.querySelector("[data-minutes]");
 const secondsSpan = document.querySelector("[data-seconds]");
 
-startButton.disabled = true;
-let selectedDate = null;
-let countdownInterval = null;
+let selectedTime = null;
+let intervalId = null;
+startBtn.disabled = true;
 
-// Flatpickr ayarları
 const options = {
   enableTime: true,
   time_24hr: true,
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-    selectedDate = selectedDates[0];
-    console.log("Seçilen tarih:", selectedDate);
+    if (selectedDates[0] <= new Date()) {
+      iziToast.error({
+        title: "Hata",
+        message: "Lütfen gelecekte bir tarih seçin",
+        position: "topRight",
+      });
+      startBtn.disabled = true;
+    } else {
+      selectedTime = selectedDates[0];
+      startBtn.disabled = false;
+    }
   },
 };
 
+flatpickr(dateTimePicker, options);
 
-// Flatpickr başlatılıyor
-flatpickr(datetimePicker, options);
+startBtn.addEventListener("click", () => {
+  startBtn.disabled = true;
+  dateTimePicker.disabled = true;
 
-// Başlat butonu
-startButton.addEventListener("click", () => {
-  if (!selectedDate) {
-    alert("Lütfen bir tarih seçin!");
-    return;
-  }
-
-  clearInterval(countdownInterval); // Önceki sayaç varsa durdur
-
-  countdownInterval = setInterval(() => {
+  intervalId = setInterval(() => {
     const now = new Date();
-    const diff = selectedDate - now;
+    const diff = selectedTime - now;
 
     if (diff <= 0) {
-      clearInterval(countdownInterval);
+      clearInterval(intervalId);
+      updateTimer({ days: 0, hours: 0, minutes: 0, seconds: 0 });
       return;
     }
 
-    const { days, hours, minutes, seconds } = convertMs(diff);
-
-    daysSpan.textContent = addLeadingZero(days);
-    hoursSpan.textContent = addLeadingZero(hours);
-    minutesSpan.textContent = addLeadingZero(minutes);
-    secondsSpan.textContent = addLeadingZero(seconds);
+    const time = convertMs(diff);
+    updateTimer(time);
   }, 1000);
 });
 
-// Yardımcı fonksiyonlar
+function updateTimer({ days, hours, minutes, seconds }) {
+  daysSpan.textContent = addLeadingZero(days);
+  hoursSpan.textContent = addLeadingZero(hours);
+  minutesSpan.textContent = addLeadingZero(minutes);
+  secondsSpan.textContent = addLeadingZero(seconds);
+}
+
 function convertMs(ms) {
   const second = 1000;
   const minute = second * 60;
@@ -65,8 +70,8 @@ function convertMs(ms) {
 
   const days = Math.floor(ms / day);
   const hours = Math.floor((ms % day) / hour);
-  const minutes = Math.floor((ms % hour) / minute);
-  const seconds = Math.floor((ms % minute) / second);
+  const minutes = Math.floor(((ms % day) % hour) / minute);
+  const seconds = Math.floor((((ms % day) % hour) % minute) / second);
 
   return { days, hours, minutes, seconds };
 }
