@@ -2,7 +2,8 @@ import { defineConfig } from 'vite';
 import { glob } from 'glob';
 import injectHTML from 'vite-plugin-html-inject';
 import FullReload from 'vite-plugin-full-reload';
-import SortCss from 'postcss-sort-media-queries';
+import postcssImport from 'postcss-import';
+import sortMediaQueries from 'postcss-sort-media-queries';
 
 export default defineConfig(({ command }) => {
   return {
@@ -40,9 +41,16 @@ export default defineConfig(({ command }) => {
     plugins: [
       injectHTML(),
       FullReload(['./src/**/**.html']),
-      SortCss({
-        sort: 'mobile-first',
-      }),
     ],
+    css: {
+      postcss: {
+        plugins: [
+          postcssImport(),
+          sortMediaQueries({
+            sort: 'mobile-first',
+          }),
+        ],
+      },
+    },
   };
 });

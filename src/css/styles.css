@@ -4,13 +4,36 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #f2f2f2;
   margin: 0;
-  
+  background: #3390b5;
+  background: linear-gradient(
+    90deg,
+    rgba(51, 144, 181, 1) 0%,
+    rgba(87, 199, 133, 1) 65%,
+    rgba(237, 221, 83, 1) 100%
+  );
 }
 
 .container {
   text-align: center;
+}
+
+.container-index a {
+  display: flex;
+  padding: 10px 25px;
+  border: 1px solid #555;
+  border-radius: 8px;
+  margin-top: 20px;
+  font-size: 20px;
+  text-decoration: none;
+  color: black;
+  justify-content: center;
+  background-color: rgba(51, 144, 181, 1);
+}
+
+.container-index a:hover {
+  background-color: rgb(216, 233, 103);
+  transform: scale(1.1);
 }
 
 #datetime-picker {
