@@ -72,3 +72,25 @@ button[data-start] {
   font-size: 14px;
   color: #555;
 }
+
+.back-a {
+  padding: 10px 15px;
+  border: 1px solid #555;
+  color: black;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  background-color: #3390b5;
+}
+
+.back-a:hover {
+  background-color: #5dc3eb;
+  transform: scale(1.1);
+}
+
+.back-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 100px;
+}
